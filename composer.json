@@ -1,0 +1,13 @@
+{
+    "name" : "wilbros/slash",
+    "require" : {
+        "php" : ">=5.4.0",
+        "twig/twig" : "~1.0"
+
+    },
+    "autoload" : {
+        "psr-0" : {
+            "Slash":"src/Slash"
+        }
+    }
+}
