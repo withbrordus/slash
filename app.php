@@ -1,10 +1,14 @@
 <?php
 require __DIR__.'/vendor/autoload.php';
 
-$app = new \Slash\Slash([
+$config = [
 	'app.environment' => \Slash\Slash::DEV,
 	'app.debug' => true,
 	'route.caseSensitive' => false
+];
+
+$app = new \Slash\Slash($config, [
+	new \Slash\Module\TwigModule()
 ]);
 
 $app->get('/', function() {

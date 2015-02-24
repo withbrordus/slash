@@ -2,6 +2,10 @@
 
 namespace Slash;
 
+use Slash\Module\AbstractModule;
+use Slash\Module\AppModule;
+use Slash\Module\ModuleInterface;
+use Slash\Module\TwigModule;
 use Slash\Service\Locator;
 use Slash\Service\LocatorInterface;
 use Slash\Http\Request;
@@ -26,26 +30,25 @@ class Slash {
 	/** @var $router ClosureDispatcher */
 	private $dispatcher;
 
-	public function __construct(array $userSettings = []) {
+	private $modules;
+
+	public function __construct(array $userSettings = [], array $modules) {
+		$this->request = Request::createFromGlobals();
+
 		$this->locator = Locator::create();
 
 		$this->locator->set('settings', $userSettings + self::defaultSettings());
 
-		$this->request = Request::createFromGlobals();
-
-		$this->locator->set('router', function() {
-			return new Router();
-		});
-
-		$this->locator->set('dispatcher', function() {
-			return new ClosureDispatcher();
-		});
-
-		$this->router = $this->locator->get('router');
-
-		$this->dispatcher = $this->locator->get('dispatcher');
+		$this->modules = [
+			'Slash\Module\AppModule' => new AppModule()
+		] + $modules;
 
 		$this->runConfiguration();
+
+		$this->router = $this->locator->get('Slash\Router');
+
+		$this->dispatcher = $this->locator->get('Slash\ClosureDispatcher');
+
 	}
 
 	public static function defaultSettings() {
@@ -57,6 +60,17 @@ class Slash {
 	}
 
 	public function runConfiguration() {
+		/** @var $module AbstractModule */
+		foreach($this->modules as $module) {
+			if($module instanceof AbstractModule) {
+				$module->provides();
+
+				foreach($module->getProviders() as $provider => $provide) {
+					$this->locator->set($provider, $provide);
+				}
+			}
+		}
+
 		$settings = $this->locator->get('settings');
 		if($settings['app.debug']) {
 			Debug::enabled();
