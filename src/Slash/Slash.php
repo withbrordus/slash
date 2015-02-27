@@ -4,12 +4,12 @@ namespace Slash;
 
 use Slash\Module\AbstractModule;
 use Slash\Module\AppModule;
-use Slash\Module\ModuleInterface;
 use Slash\Module\TwigModule;
 use Slash\Service\Locator;
 use Slash\Service\LocatorInterface;
 use Slash\Http\Request;
 use Slash\Http\Response;
+use Twig_Environment;
 
 class Slash {
 
@@ -32,15 +32,18 @@ class Slash {
 
 	private $modules;
 
-	public function __construct(array $userSettings = [], array $modules) {
+	public function __construct(array $userSettings = [], array $modules = []) {
 		$this->request = Request::createFromGlobals();
 
 		$this->locator = Locator::create();
 
 		$this->locator->set('settings', $userSettings + self::defaultSettings());
 
+		$this->settings = $this->locator->get('settings');
+
 		$this->modules = [
-			'Slash\Module\AppModule' => new AppModule()
+			'Slash\Module\AppModule' => new AppModule(),
+			'Slash\Module\TwigModule' => new TwigModule($this->settings['template.path'])
 		] + $modules;
 
 		$this->runConfiguration();
@@ -55,7 +58,8 @@ class Slash {
 		return [
 			'app.environment' => Slash::DEV,
 			'app.debug' => true,
-			'route.caseSensitive' => false
+			'route.caseSensitive' => false,
+			'template.path' => __DIR__
 		];
 	}
 
@@ -71,8 +75,7 @@ class Slash {
 			}
 		}
 
-		$settings = $this->locator->get('settings');
-		if($settings['app.debug']) {
+		if($this->settings['app.debug']) {
 			Debug::enabled();
 		}
 	}
@@ -101,7 +104,7 @@ class Slash {
 		$uri = array_shift($args);
 		$callable = array_pop($args);
 
-		$route = new Route($uri, $callable, $this->locator->get('settings')['route.caseSensitive']);
+		$route = new Route($uri, $callable, $this->settings['route.caseSensitive']);
 
 		$this->router->lock($route);
 
@@ -154,8 +157,11 @@ class Slash {
 		]);
 	}
 
-	public function render($template) {
-		//support twig and blade engine
+	public function render($template, array $model = []) {
+		/** @var $renderer Twig_Environment */
+		$renderer = $this->locator->get('renderer');
+
+		return $renderer->render($template, $model);
 	}
 
 	public function toJSON($data) {
@@ -172,14 +178,14 @@ class Slash {
 				throw new \Exception("Page not found!", Response::NOT_FOUND);
 			}
 
-			$this->dispatcher->dispatch($action, $this->request, $response);
+			$response = $this->dispatcher->dispatch($action, $this->request, $response);
 
 		} catch(\Exception $e) {
 			if($e->getCode() == Response::NOT_FOUND) {
 				$response->setHttpCode($e->getCode());
 				$response->write($e->getMessage());
 			} else {
-				$response->setHttpCode($e->getCode());
+				$response->setHttpCode(Response::INTERNAL_SERVER_ERROR);
 				$response->write($e->getMessage());
 			}
 		}

@@ -8,6 +8,8 @@ use Slash\Http\Response;
 class ClosureDispatcher {
 
 	public function dispatch(\Closure $action, Request $request, Response $response) {
-		return $action($request, $response);
+		$response->write($action($request, $response));
+
+		return $response;
 	}
 } 

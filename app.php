@@ -4,15 +4,14 @@ require __DIR__.'/vendor/autoload.php';
 $config = [
 	'app.environment' => \Slash\Slash::DEV,
 	'app.debug' => true,
-	'route.caseSensitive' => false
+	'route.caseSensitive' => false,
+	'template.path' => __DIR__."/views"
 ];
 
-$app = new \Slash\Slash($config, [
-	new \Slash\Module\TwigModule()
-]);
+$app = new \Slash\Slash($config, []);
 
-$app->get('/', function() {
-	echo 'Hello World!';
+$app->get('/', function() use($app) {
+	return $app->render('home.html.twig');
 });
 
 $app->get('/product/{id}/list', function($id) {

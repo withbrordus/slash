@@ -6,10 +6,10 @@ class TwigModule extends AbstractModule {
 
 	private $renderer;
 
-	public function __construct() {
+	public function __construct($templatePath) {
 		\Twig_Autoloader::register(false);
 
-		$loader = new \Twig_Loader_Filesystem(__DIR__);
+		$loader = new \Twig_Loader_Filesystem($templatePath);
 		$renderer = new \Twig_Environment($loader);
 
 		$this->renderer = $renderer;
