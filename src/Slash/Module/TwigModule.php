@@ -2,7 +2,7 @@
 
 namespace Slash\Module;
 
-class TwigModule extends AbstractModule {
+class TwigModule extends AbstractModule implements ModuleInterface {
 
 	private $renderer;
 

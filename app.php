@@ -8,10 +8,13 @@ $config = [
 	'template.path' => __DIR__."/views"
 ];
 
-$app = new \Slash\Slash($config, []);
+$app = new \Slash\Slash($config, [
+	new \Slash\Module\DatabaseModule(),
+	new \Slash\Module\RedisModule()
+]);
 
 $app->get('/', function() use($app) {
-	return $app->render('home.html.twig');
+	return $app->render('js.html.twig');
 });
 
 $app->get('/product/{id}/list', function($id) {
