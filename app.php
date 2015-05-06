@@ -1,17 +1,15 @@
 <?php
 require __DIR__.'/vendor/autoload.php';
 
-$config = [
-	'app.environment' => \Slash\Slash::DEV,
-	'app.debug' => true,
-	'route.caseSensitive' => false,
-	'template.path' => __DIR__."/views"
-];
 
-$app = new \Slash\Slash($config, [
-	new \Slash\Module\DatabaseModule(),
-	new \Slash\Module\RedisModule()
+$app = new \Slash\Slash(include 'config.php', [
+	new \Slash\Module\Impl\DatabaseModule(),
+	new \Slash\Module\Impl\RedisModule()
 ]);
+
+$blog = new BlogController();
+$app->rootRoute('/blog', $blog);
+
 
 $app->get('/', function() use($app) {
 	return $app->render('js.html.twig');

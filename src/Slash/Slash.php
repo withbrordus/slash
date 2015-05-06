@@ -2,9 +2,9 @@
 
 namespace Slash;
 
-use Slash\Module\AbstractModule;
-use Slash\Module\AppModule;
-use Slash\Module\TwigModule;
+use Slash\Module\Impl\AppModule;
+use Slash\Module\Impl\TwigModule;
+use Slash\Module\ModuleProviderInterface;
 use Slash\Service\Locator;
 use Slash\Service\LocatorInterface;
 use Slash\Http\Request;
@@ -64,19 +64,17 @@ class Slash {
 	}
 
 	public function runConfiguration() {
-		/** @var $module AbstractModule */
-		foreach($this->modules as $module) {
-			if($module instanceof AbstractModule) {
-				$module->provides();
-
-				foreach($module->getProviders() as $provider => $provide) {
-					$this->locator->set($provider, $provide);
-				}
-			}
-		}
-
 		if($this->settings['app.debug']) {
 			Debug::enabled();
+		}
+
+		/** @var $module ModuleProviderInterface */
+		foreach($this->modules as $module) {
+			if($module instanceof ModuleProviderInterface) {
+				$module->provides($this->locator);
+
+				$module->boot();
+			}
 		}
 	}
 
@@ -98,6 +96,10 @@ class Slash {
 
 	public function getSettings() {
 		return $this->settings;
+	}
+
+	public function rootRoute($rootPath, ControllerProviderInterface $controller) {
+
 	}
 
 	public function route(array $args) {
