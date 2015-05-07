@@ -34,6 +34,8 @@ class Slash {
 
     private $rootPath = null;
 
+    private $booted = false;
+
 	public function __construct(array $userSettings = [], array $modules = []) {
 		$this->request = Request::createFromGlobals();
 
@@ -74,11 +76,22 @@ class Slash {
 		foreach($this->modules as $module) {
 			if($module instanceof ModuleProviderInterface) {
 				$module->provides($this->locator);
-
-				$module->boot();
 			}
 		}
+
+        $this->boot();
 	}
+
+    public function boot() {
+        if(!$this->booted) {
+            /** @var $module ModuleProviderInterface */
+            foreach($this->modules as $module) {
+                $module->boot();
+            }
+
+            $this->booted = true;
+        }
+    }
 
 	public function getLocator() {
 		return $this->locator;
