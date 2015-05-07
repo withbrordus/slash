@@ -1,6 +1,6 @@
 <?php
 require __DIR__.'/vendor/autoload.php';
-
+include 'BlogController.php';
 
 $app = new \Slash\Slash(include 'config.php', [
 	new \Slash\Module\Impl\DatabaseModule(),
@@ -9,7 +9,6 @@ $app = new \Slash\Slash(include 'config.php', [
 
 $blog = new BlogController();
 $app->rootRoute('/blog', $blog);
-
 
 $app->get('/', function() use($app) {
 	return $app->render('js.html.twig');

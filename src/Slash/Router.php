@@ -17,8 +17,8 @@ class Router {
 		$this->routes = [];
 	}
 
-	public function lock(Route $route) {
-		$this->routes[] = $route;
+	public function lock(Controller $controller) {
+		$this->routes[] = $controller->getRoute();
 
 		return $this;
 	}

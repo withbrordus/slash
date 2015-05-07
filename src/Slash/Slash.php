@@ -32,6 +32,8 @@ class Slash {
 
 	private $modules;
 
+    private $rootPath = null;
+
 	public function __construct(array $userSettings = [], array $modules = []) {
 		$this->request = Request::createFromGlobals();
 
@@ -99,18 +101,39 @@ class Slash {
 	}
 
 	public function rootRoute($rootPath, ControllerProviderInterface $controller) {
+        $this->rootPath = $rootPath;
 
+        if($controller->connect($this)) {
+            $this->rootPath = null;
+        }
 	}
+
+    public function clearRootPath() {
+        $this->rootPath = null;
+    }
 
 	public function route(array $args) {
 		$uri = array_shift($args);
-		$callable = array_pop($args);
+        $callable = array_pop($args);
 
-		$route = new Route($uri, $callable, $this->settings['route.caseSensitive']);
+        if($this->rootPath != null) {
+            if(strrpos($this->rootPath, '/') > -1 && strlen($this->rootPath) !== 1) {
+                $this->rootPath = rtrim($this->rootPath, '/');
 
-		$this->router->lock($route);
+                $uri = ltrim($uri, '/');
+            }
 
-		return $route;
+            $uri = sprintf('%s/%s', $this->rootPath, $uri);
+
+            $this->clearRootPath();
+        }
+
+        $route = new Route($uri, $callable, $this->settings['route.caseSensitive']);
+        $controller = new Controller($route);
+
+        $this->router->lock($controller);
+
+        return $route;
 	}
 
 	public function map() {
