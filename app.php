@@ -3,7 +3,7 @@ require __DIR__.'/vendor/autoload.php';
 include 'BlogController.php';
 
 $app = new \Slash\Slash(include 'config.php', [
-	new \Slash\Module\Impl\DatabaseModule(),
+	new \Slash\Module\Impl\PDOModule(),
 	new \Slash\Module\Impl\RedisModule()
 ]);
 

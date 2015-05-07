@@ -10,7 +10,7 @@ Slash is a PHP micro-framework to develop websites:
     require_once __DIR__.'/vendor/autoload.php';
 
     $app = new \Slash\Slash(include 'config.php', [
-    	new \Slash\Module\Impl\DatabaseModule(),
+    	new \Slash\Module\Impl\PDOModule(),
     	new \Slash\Module\Impl\RedisModule()
     ]);
 
