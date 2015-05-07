@@ -19,9 +19,3 @@ Slash is a PHP micro-framework to develop websites:
     });
 
     $app->run();
-
-
-License
--------
-
-Slash is licensed under the MIT license.
