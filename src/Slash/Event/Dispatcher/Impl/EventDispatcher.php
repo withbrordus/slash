@@ -22,16 +22,23 @@ class EventDispatcher implements EventDispatcherInterface{
         foreach($sortedListeners as $listeners) {
             foreach($listeners as $listener) {
                 call_user_func($listener, $eventName, $event);
+                if($event->isEventPropagationStopped()) {
+                    break;
+                }
             }
         }
     }
 
     function sortListeners($eventName) {
 
-        return $this->listeners[$eventName];
+        return $this->getListeners($eventName);
     }
 
     function getListeners($eventName) {
+        if(!array_key_exists($eventName, $this->listeners)) {
+            return [];
+        }
+
         return $this->listeners[$eventName];
     }
 
