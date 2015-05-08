@@ -2,6 +2,8 @@
 
 namespace Slash;
 
+use Slash\Event\Dispatcher\Impl\EventDispatcher;
+use Slash\Event\Events;
 use Slash\Module\Impl\AppModule;
 use Slash\Module\Impl\TwigModule;
 use Slash\Module\ModuleProviderInterface;
@@ -30,6 +32,9 @@ class Slash {
 	/** @var $router ClosureDispatcher */
 	private $dispatcher;
 
+    /** @var $eventDispatcher EventDispatcher */
+    private $eventDispatcher;
+
 	private $modules;
 
     private $rootPath = null;
@@ -51,6 +56,8 @@ class Slash {
 		] + $modules;
 
 		$this->runConfiguration();
+
+        $this->eventDispatcher = $this->locator->get('Slash\Event\Dispatcher\Impl\EventDispatcher');
 
 		$this->router = $this->locator->get('Slash\Router');
 
@@ -207,6 +214,8 @@ class Slash {
 	}
 
 	public function run() {
+        $this->eventDispatcher->dispatch(Events::REQUEST);
+
 		$response = new Response(Response::OK);
 
 		try {
