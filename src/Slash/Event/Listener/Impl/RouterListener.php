@@ -4,20 +4,17 @@ namespace Slash\Event\Listener\Impl;
 
 use Slash\Event\Events;
 use Slash\Event\Listener\EventSubscriberInterface;
+use Slash\Event\RequestEvent;
 use Slash\Event\ResponseEvent;
-use Slash\Http\Response;
 
 class RouterListener implements EventSubscriberInterface {
 
-    function onRequest() {
-        echo 'Request fire up!';
+    function onRequest(RequestEvent $event) {
+        echo 'Request Listener!';
     }
 
-    function onResponse($a, ResponseEvent $event) {
-        $a = new Response();
-        $a->write('response baru');
-
-        $event->setResponse($a);
+    function onResponse(ResponseEvent $event) {
+        echo 'Response Listener!';
     }
 
     function getSubscribedEvents() {

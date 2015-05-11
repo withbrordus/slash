@@ -12,4 +12,6 @@ final class Events {
     const CONTROLLER = 'slash.controller';
 
     const VIEW = 'slash.view';
+
+    const FINISH = 'slash.finish';
 } 

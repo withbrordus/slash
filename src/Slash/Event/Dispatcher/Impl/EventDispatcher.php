@@ -5,8 +5,6 @@ namespace Slash\Event\Dispatcher\Impl;
 use Slash\Event\Dispatcher\EventDispatcherInterface;
 use Slash\Event\Event;
 use Slash\Event\Listener\EventSubscriberInterface;
-use Slash\Event\RequestEvent;
-use Slash\Event\ResponseEvent;
 
 class EventDispatcher implements EventDispatcherInterface{
 
@@ -23,7 +21,7 @@ class EventDispatcher implements EventDispatcherInterface{
         $sortedListeners = $this->sortListeners($eventName);;
         foreach($sortedListeners as $listeners) {
             foreach($listeners as $listener) {
-                call_user_func($listener, $eventName, $event);
+                call_user_func($listener, $event);
                 if($event->isEventPropagationStopped()) {
                     break;
                 }
