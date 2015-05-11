@@ -5,6 +5,8 @@ namespace Slash\Event\Dispatcher\Impl;
 use Slash\Event\Dispatcher\EventDispatcherInterface;
 use Slash\Event\Event;
 use Slash\Event\Listener\EventSubscriberInterface;
+use Slash\Event\RequestEvent;
+use Slash\Event\ResponseEvent;
 
 class EventDispatcher implements EventDispatcherInterface{
 
@@ -12,7 +14,7 @@ class EventDispatcher implements EventDispatcherInterface{
 
     function dispatch($eventName, Event $event = null) {
         if($event == null) {
-            $event = new Event();
+            $event = new Event(null);
         }
 
         $event->setEventName($eventName);
@@ -27,6 +29,8 @@ class EventDispatcher implements EventDispatcherInterface{
                 }
             }
         }
+
+        return $event;
     }
 
     function sortListeners($eventName) {

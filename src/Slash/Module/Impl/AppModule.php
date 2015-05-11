@@ -4,7 +4,7 @@ namespace Slash\Module\Impl;
 
 use Slash\ClosureDispatcher;
 use Slash\Event\Dispatcher\Impl\EventDispatcher;
-use Slash\Event\Listener\Impl\LoggerListener;
+use Slash\Event\Listener\Impl\RouterListener;
 use Slash\Module\ModuleProviderInterface;
 use Slash\Router;
 use Slash\Service\LocatorInterface;
@@ -22,7 +22,7 @@ class AppModule implements ModuleProviderInterface {
 
         $locator->set('Slash\Event\Dispatcher\Impl\EventDispatcher', function() {
             $dispatcher = new EventDispatcher();
-            $dispatcher->addSubscriber(new LoggerListener());
+            $dispatcher->addSubscriber(new RouterListener());
 
             return $dispatcher;
         });

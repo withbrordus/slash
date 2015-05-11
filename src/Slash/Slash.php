@@ -4,6 +4,8 @@ namespace Slash;
 
 use Slash\Event\Dispatcher\Impl\EventDispatcher;
 use Slash\Event\Events;
+use Slash\Event\ExceptionEvent;
+use Slash\Event\RequestEvent;
 use Slash\Module\Impl\AppModule;
 use Slash\Module\Impl\TwigModule;
 use Slash\Module\ModuleProviderInterface;
@@ -214,27 +216,26 @@ class Slash {
 	}
 
 	public function run() {
-        $this->eventDispatcher->dispatch(Events::REQUEST);
+        $requestEvent = $this->eventDispatcher->dispatch(Events::REQUEST, new RequestEvent($this->getRequest()));
+        $this->request = $requestEvent->getRequest();
 
 		$response = new Response(Response::OK);
 
 		try {
-			$action = $this->router->resolve($this->request);
+			$action = $this->router->resolve($this->request, $this->eventDispatcher);
 
 			if(empty($action) || $action == null) {
 				throw new \Exception("Page not found!", Response::NOT_FOUND);
 			}
 
-			$response = $this->dispatcher->dispatch($action, $this->request, $response);
+			$response = $this->dispatcher->dispatch($action, $this->request, $response, $this->eventDispatcher);
 
 		} catch(\Exception $e) {
-			if($e->getCode() == Response::NOT_FOUND) {
-				$response->setHttpCode($e->getCode());
-				$response->write($e->getMessage());
-			} else {
-				$response->setHttpCode(Response::INTERNAL_SERVER_ERROR);
-				$response->write($e->getMessage());
-			}
+            /** @var $exceptionEvent ExceptionEvent */
+            $exceptionEvent = $this->eventDispatcher->dispatch(Events::EXCEPTION, new ExceptionEvent($this->request, $response, $e));
+            $exception = $exceptionEvent->getException();
+
+            return $exception;
 		}
 
 		$response->flush();

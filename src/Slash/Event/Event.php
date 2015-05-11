@@ -3,13 +3,32 @@
 namespace Slash\Event;
 
 use Slash\Event\Dispatcher\EventDispatcherInterface;
+use Slash\Http\Request;
 
 class Event {
+    private $request;
+
     private $eventName;
 
     private $dispatcher;
 
     private $stopEventPropagation = false;
+
+    public function __construct(Request $request) {
+        $this->request = $request;
+    }
+
+    public function hasRequest() {
+        return $this->request !== null;
+    }
+
+    public function getRequest() {
+        return $this->request;
+    }
+
+    public function setRequest(Request $request) {
+        $this->request = $request;
+    }
 
     public function setDispatcher(EventDispatcherInterface $dispatcher) {
         $this->dispatcher = $dispatcher;

@@ -2,6 +2,9 @@
 
 namespace Slash;
 
+use Slash\Event\Dispatcher\EventDispatcherInterface;
+use Slash\Event\Events;
+use Slash\Event\ResponseEvent;
 use Slash\Http\Request;
 
 class Router {
