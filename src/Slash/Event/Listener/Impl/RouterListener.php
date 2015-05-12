@@ -10,11 +10,11 @@ use Slash\Event\ResponseEvent;
 class RouterListener implements EventSubscriberInterface {
 
     function onRequest(RequestEvent $event) {
-        echo 'Request Listener!';
+        
     }
 
     function onResponse(ResponseEvent $event) {
-        echo 'Response Listener!';
+
     }
 
     function getSubscribedEvents() {

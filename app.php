@@ -11,7 +11,7 @@ $blog = new BlogController();
 $app->rootRoute('/blog', $blog);
 
 $app->get('/', function() use($app) {
-	return $app->render('panada.html.twig');
+	return 'Hello World!';
 });
 
 $app->get('/product/{id}/list', function($id) {
