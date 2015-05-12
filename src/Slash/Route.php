@@ -66,7 +66,15 @@ class Route {
 	}
 
 	public function matches($requestURI, $method) {
-		if(substr($this->uri, -1) === '/') {
+		if(defined('APP_FILE_PATH')) {
+            $requestURI = trim(str_replace(APP_FILE_PATH, '', $requestURI));
+
+            if($requestURI == '' || strlen($requestURI) == 0) {
+                $requestURI = '/';
+            }
+        }
+
+        if(substr($this->uri, -1) === '/') {
 			$this->uri .= "?";
 		}
 
@@ -87,6 +95,7 @@ class Route {
 
 			return true;
 		}
+
 		return false;
 	}
 

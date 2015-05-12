@@ -222,11 +222,7 @@ class Slash {
 		$response = new Response(Response::OK);
 
 		try {
-			$action = $this->router->resolve($this->request, $this->eventDispatcher);
-
-			if(empty($action) || $action == null) {
-				throw new \Exception("Page not found!", Response::NOT_FOUND);
-			}
+			$action = $this->router->resolve($this->request);
 
 			$response = $this->dispatcher->dispatch($action, $this->request, $response, $this->eventDispatcher);
 
@@ -235,6 +231,7 @@ class Slash {
             $exceptionEvent = $this->eventDispatcher->dispatch(Events::EXCEPTION, new ExceptionEvent($this->request, $response, $e));
             $exception = $exceptionEvent->getException();
 
+            echo $exception->getMessage();
             return $exception;
 		}
 

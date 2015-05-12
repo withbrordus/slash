@@ -6,6 +6,7 @@ use Slash\Event\Dispatcher\EventDispatcherInterface;
 use Slash\Event\Events;
 use Slash\Event\ResponseEvent;
 use Slash\Http\Request;
+use Slash\Http\Response;
 
 class Router {
 
@@ -48,7 +49,7 @@ class Router {
 		}
 
 		if($this->currentRoute == null) {
-			return;
+            throw new \Exception("Page not found!", Response::NOT_FOUND);
 		}
 
 		return function() {
