@@ -232,6 +232,7 @@ class Slash {
             $exception = $exceptionEvent->getException();
 
             echo $exception->getMessage();
+
             return $exception;
 		}
 

@@ -1,14 +1,14 @@
 <?php
-require __DIR__.'/vendor/autoload.php';
-include 'BlogController.php';
+
+require __DIR__.'/../vendor/autoload.php';
+include __DIR__.'/controllers/BlogController.php';
 
 $app = new \Slash\Slash(include 'config.php', [
 	new \Slash\Module\Impl\PDOModule(),
 	new \Slash\Module\Impl\RedisModule()
 ]);
 
-$blog = new BlogController();
-$app->rootRoute('/blog', $blog);
+$app->rootRoute('/blog', new BlogController());
 
 $app->get('/', function() use($app) {
 	return 'Hello World!';
