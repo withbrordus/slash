@@ -6,8 +6,8 @@
 
     },
     "autoload" : {
-        "psr-0" : {
-            "Slash":"src/Slash"
+        "psr-4" : {
+            "Slash\\":"src/Slash"
         }
     }
 }
