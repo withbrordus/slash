@@ -11,7 +11,7 @@ $app = new \Slash\Slash(include 'config.php', [
 $app->rootRoute('/blog', new BlogController());
 
 $app->get('/', function() use($app) {
-	return 'Hello World!';
+	return $app->render('welcome.html.twig');
 });
 
 $app->get('/product/{id}/list', function($id) {
